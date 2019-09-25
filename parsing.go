@@ -20,6 +20,7 @@ func main() {
 		Multiline string   `yaml:"multi_line_variable"`
 		Hobbies   []string `yaml:"hobbies"`
 		FriendList []map[string]string `yaml:"friend_list"`
+		EnvVars map[string]string `yaml:"env_vars"`
 	}
 
 	var up userProfile
@@ -45,4 +46,8 @@ func main() {
 	}
 
 
+	fmt.Printf("\nEnv Variables: \n")
+	for k, v := range up.EnvVars {
+		fmt.Printf("\t%s -> %s \n", k, v)
+	}
 }

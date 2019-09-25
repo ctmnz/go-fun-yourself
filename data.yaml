@@ -31,9 +31,10 @@ use_anchor: *real_anchor
 base: &base_anchor
   env_var1: environment_variable1
 
-foo:
+env_vars:
   <<: *base_anchor
-  var2: value2
+  env_var2: Second env variable
+  env_var3: 3rd one
 
 
 
