@@ -1,0 +1,40 @@
+name: Daniel Stoinov
+age: 41
+location: Bulgaria, Sofia
+birthday: 1978-03-29 15:00
+hobbies:
+  - football
+  - basketball
+  - vim
+  - movies
+  - travel
+fav_days_list: ["Monday (joking)", "Wednesday", "Friday"]
+anchor_demo: &real_anchor Hello... this is my anchor 
+friend_list:
+  - name: Georgi Georgiev
+    email: gg@gmail.com
+  - name: Peter Petrov
+    email: pp@gmail.com
+  - name: Ivan Ivanov
+    email: ii@gmail.com
+really_big_single_line: >
+  This is really big single line 
+  It is not something that is going 
+  to be translated on the next line 
+  it is still the same thing
+multi_line_variable: |
+  Daniel Stoinov
+  www.stnv.xyz
+  This is multiline signature!
+use_anchor: *real_anchor
+
+base: &base_anchor
+  env_var1: environment_variable1
+
+foo:
+  <<: *base_anchor
+  var2: value2
+
+
+
+
