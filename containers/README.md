@@ -1,8 +1,7 @@
 Video: https://www.youtube.com/watch?v=8fi7uSYlOdc
 
 
-Additional:
-- Create chroot evironment for the demo (https://wiki.debian.org/Debootstrap)
+Start the container:
 ```bash
 sudo apt-get install debootstrap
 mkdir stable-chroot
