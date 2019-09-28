@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"syscall"
+	"net"
 )
 
 func main() {
@@ -21,13 +22,22 @@ func main() {
 	}
 }
 
+type NetworkConfig struct {
+	BridgeName	string
+	BridgeIP	net.IP
+	ContainerIP	net.IP
+	Subnet		*net.IPNet
+	VethNamePrefix	string
+}
+
+
 func run() {
 	fmt.Printf("runnign %v as PID %d\n", os.Args[2:], os.Getpid())
 	cmd := exec.Command("/proc/self/exe", append([]string{"child"}, os.Args[2:]...)...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Env = append(os.Environ(), "ENV_VAR1=VALUE1", "ENV_VAR2=VALUE2", "MYNAME=DANIEL", "PS1=#homemadecontainer# ")
+	cmd.Env = append(os.Environ(), "ENV_VAR1=VALUE1", "ENV_VAR2=VALUE2", "MYNAME=DANIEL")
 	cmd.SysProcAttr = &syscall.SysProcAttr {
 		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
 		Unshareflags: syscall.CLONE_NEWNS,
@@ -53,6 +63,9 @@ func child() {
         cmd.Stderr = os.Stderr
 
 	must(cmd.Run())
+
+	must(syscall.Unmount("/proc", 0))
+
 }
 
 func cg() {
@@ -63,6 +76,8 @@ func cg() {
 	must(ioutil.WriteFile(filepath.Join(pids, "myhomemadecontaners/notify_on_release"), []byte("1"), 0700))
 	must(ioutil.WriteFile(filepath.Join(pids, "myhomemadecontaners/cgroup.procs"), []byte(strconv.Itoa(os.Getpid())), 0700))
 }
+
+
 
 func must(err error) {
 	if err != nil {
