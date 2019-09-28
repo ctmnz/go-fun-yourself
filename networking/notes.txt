@@ -1,0 +1,40 @@
+
+
+Bridge - dummy link
+
+1. Create Bridge
+2. Bring the bridge up
+3. Create a link
+4. Add the link into bridge
+5. Bring the link up
+
+
+1. Create bridge and bring it up 
+    - mydridge
+1.1 Set link IP (10.0.41.1/16)
+1.2 Set link up
+
+2. Creeate VETH pair
+2.1 -myveth01 and myveth02 peered
+2.2 asign an IP to myveth01 10.0.41.2/16
+2.3 asign an IP to myveth02 10.0.41.3/16
+
+3. Add myveth01 to mydridge and bring it up
+3.1 add skave myveth01 to mydridge
+3.2 set link up
+
+4. Add myveth02 to mydridge and bring it up
+4.1 add skave myveth02 to mydridge
+4.2 set link up
+
+5 Create macvlan interface and bring it up
+5.1 eth0 (mode: bridge) -> macvlan01
+5.2 set link up
+
+5 Create vlan interface and bring it up
+5.1 eth1 -> id: 10, device "vlan01"
+5.2 set link up
+
+
+
+
