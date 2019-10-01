@@ -69,6 +69,13 @@ curl http://10.0.0.3
 
 ### hm... but it is limited though... only 2 connected points.. 
 
+## macvlan (That is actually dope)
+#### on the host (27844 is the process of the container)
+sudo ip link add link enp4s0 macvlan1 type macvlan 
+sudo ip link set macvlan1 netns 27844
+
+## on the client
+dhclient macvlan1 -v
 
 
 
