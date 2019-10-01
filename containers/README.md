@@ -69,19 +69,36 @@ curl http://10.0.0.3
 
 ### hm... but it is limited though... only 2 connected points.. 
 
-## macvlan (That is actually dope)
+## macvlan 
 #### on the host (27844 is the process of the container)
+ip link set enp4s0 promisc on
 sudo ip link add link enp4s0 macvlan1 type macvlan 
-sudo ip link set macvlan1 netns 27844
+sudo ip link set macvlan1 netns $(head -n 1 /sys/fs/cgroup/pids/myhomemadecontaners/cgroup.procs)
 
 ## on the client
 dhclient macvlan1 -v
 
 
+## omg... (this filtering kept me awake until 5am and bad result...
+
+```
+Important Point: When using macvlan, you cannot ping or communicate with the default namespace IP address. For example, if you create a container and try to ping the Docker host’s eth0, it will not work. That traffic is explicitly filtered by the kernel modules themselves to offer additional provider isolation and security.
+
+```
+
+
+
+## ipvlan
+
+
+
+
+
 
 ### used links
 
-
+https://www.kernel.org/doc/Documentation/networking/ipvlan.txt
+http://collabnix.com/2-minutes-to-docker-macvlan-networking-a-beginners-guide/
 
 Video: https://www.youtube.com/watch?v=8fi7uSYlOdc
 
