@@ -1,4 +1,3 @@
-
 Create network namespaces:
 
 ```
@@ -55,4 +54,42 @@ ip address add 10.0.0.3/24 dev ETH-HOST
 ```
 
 
+Join a container in the party
+```
+sudo go run container.go run /bin/bash
+
+# In the host
+CPID=$(cat /sys/fs/cgroup/pids/myhomemadecontaners/cgroup.procs | head -n 1)
+ip link add eth-container type veth peer name veth-container
+ovs-vsctl add-port ovs1 veth-container
+ip link set dev veth-container up
+ip link set eth-container netns $CPID
+
+# In the container
+ip address add 10.0.0.5/24 dev eth-container
+ip link set dev eth-container up
+
+```
+
+Provide internet to the container
+```
+### on the host
+sudo /sbin/iptables -t nat -A POSTROUTING -o enp4s0 -j MASQUERADE
+sudo /sbin/iptables -A FORWARD -i enp4s0 -o eth-host -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo /sbin/iptables -A FORWARD -i eth-host -o enp4s0 -j ACCEPT
+
+
+### on the container (using 10.0.0.3 because the host has this address)
+ip route add default via 10.0.0.3 dev eth-container
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+```
+
+
+
+
+
+Links:
+
+https://www.youtube.com/watch?v=_WgUwUf1d34
 
