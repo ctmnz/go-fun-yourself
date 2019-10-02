@@ -1,3 +1,4 @@
+
 Create network namespaces:
 
 ```
@@ -88,8 +89,64 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 
 
+dhcp processes:
+```
+ip netns exec red ip address del 10.0.0.1/24 dev eth0-r
+ip netns exec green ip address del 10.0.0.2/24 dev eth0-go
+
+## add 2 new namespaces
+ip netns add dhcp-r
+ip netns add dhcp-g
+
+## create new port
+ovs-vsctl add-port ovs1 tap-r
+ovs-vsctl set interface tap-r type=internal
+ovs-vsctl set port tab-r tag=100
+
+ovs-vsctl add-port ovs1 tap-g
+ovs-vsctl set interface tap-g type=internal
+ovs-vsctl set port tab-g tag=200
+
+ovs-vsctl show
+
+ip link set tap-r netns dhcp-r
+ip link set tap-g netns dhcp-g
+
+ip link 
+ovs-vsctl show
+
+## interface configuration
+
+ip netns exec dhcp-r bash
+ip link set dev lo up
+ip link set dev tap-r up
+ip address add 10.50.50.2/24 dev tap-r
+
+ip netns exec dhcp-g bash
+ip link set dev lo up
+ip link set dev tap-g up
+ip address add 10.50.50.2/24 dev tap-g
+
+
+## running the dhcp service
+ip netns exec dhcp-r dnsmasq --interface=tap-r --dhcp-range=10.50.50.10,10.50.50.100,255.255.255.0
+ip netns exec dhcp-g dnsmasq --interface=tap-g --dhcp-range=10.50.50.10,10.50.50.100,255.255.255.0
+
+ps -ef
+ip netns identify [PIDs]
+
+## pulling IPs from the clients
+ip netns exec red dhclient eth0-r
+ip netns exec red ip a
+
+ip netns exec green dhclient eth0-g
+ip netns exec green ip a
+
+```
+
+
+
 
 Links:
 
 https://www.youtube.com/watch?v=_WgUwUf1d34
-
